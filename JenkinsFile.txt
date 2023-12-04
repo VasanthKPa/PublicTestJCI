@@ -1,0 +1,44 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Checkout') {
+            steps {
+                // Checkout code from a version control system (e.g., Git)
+                git 'https://github.com/VasanthKPa/PublicTestJCI.git'
+            }
+        }
+        stage('Build') {
+            steps {
+                // Execute the build commands
+                sh 'mvn clean install' // Or any other build tool command
+            }
+        }
+        stage('Test') {
+            steps {
+                // Run tests
+                sh 'mvn test' // Or any other testing command
+            }
+        }
+        stage('Deploy') {
+            steps {
+                // Deployment steps
+                sh 'kubectl apply -f deployment.yaml' // Or any other deployment command
+            }
+        }
+    }
+
+    post {
+        success {
+            // Actions to perform when the pipeline succeeds
+            echo 'Pipeline succeeded!'
+
+            // You can trigger other jobs or actions upon success
+            // build job: 'AnotherJob', parameters: [string(name: 'PARAM_NAME', value: 'PARAM_VALUE')]
+        }
+        failure {
+            // Actions to perform when the pipeline fails
+            echo 'Pipeline failed!'
+        }
+    }
+}
